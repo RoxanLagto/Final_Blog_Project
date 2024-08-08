@@ -30,23 +30,22 @@ class PostController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'title' => 'required|string|max:255',
-            'content' => 'required|string',
+            'title' => 'required',
+            'content' => 'required',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
-        $post = new Post();
-        $post->title = $request->title;
-        $post->content = $request->content;
+        $input = $request->all();
 
-    if ($request->hasFile('image')) {
-        $imagePath = $request->file('image')->store('images', 'public');
-        $post->image = $imagePath;
-    }
+        if ($image = $request->file('image')) {
+            $destinationPath = 'images/';
+            $profileImage = date('YmdHis') . "." . $image->getClientOriginalExtension();
+            $image->move($destinationPath, $profileImage);
+            $input['image'] = "$destinationPath$profileImage";
+        }
+        Post::create($input);
 
-    $post.save();
-
-    return redirect()->route('posts.index')->with('success', 'Post created successfully.');
+        return redirect()->route('posts.index')->with('success', 'Post created successfully.');
     }
 
     /**
@@ -76,20 +75,20 @@ class PostController extends Controller
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
     
-        $post->title = $request->title;
-        $post->content = $request->content;
-
-    if ($request->hasFile('image')) {
-        if ($post->image) {
-            Storage::delete('public/' . $post->image);
+        $input = $request->all();
+    
+        if ($image = $request->file('image')) {
+            $destinationPath = 'images/';
+            $profileImage = date('YmdHis') . "." . $image->getClientOriginalExtension();
+            $image->move($destinationPath, $profileImage);
+            $input['image'] = "$destinationPath$profileImage";
+        } else {
+            unset($input['image']);
         }
-        $imagePath = $request->file('image')->store('images', 'public');
-        $post->image = $imagePath;
-    }
-
-    $post->save();
-
-    return redirect()->route('posts.index')->with('success', 'Post updated successfully.');
+    
+        $post->update($input);
+    
+        return redirect()->route('posts.index')->with('success', 'Post updated successfully.');
     }
 
     /**
