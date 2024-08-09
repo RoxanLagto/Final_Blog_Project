@@ -7,14 +7,12 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <!-- Dashboard Header -->
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
                     {{ __("WELCOME TO THE BLOG!") }}
                 </div>
             </div>
 
-            <!-- Posts Section -->
             <div class="mt-8 bg-gray-300 shadow-md rounded">
                 <div class="p-6">
                     <div class="flex justify-between items-center mb-4">
